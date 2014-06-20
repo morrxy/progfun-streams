@@ -47,12 +47,12 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-//  test("findChar level 1") {
-//    new Level1 {
-//      assert(startPos == Pos(1,1))
-//    }
-//  }
-//
+  test("findChar level 1") {
+    new Level1 {
+      assert(startPos == Pos(1,1))
+    }
+  }
+
 //  test("optimal solution for level 1") {
 //    new Level1 {
 //      assert(solve(solution) == Block(goal, goal))
