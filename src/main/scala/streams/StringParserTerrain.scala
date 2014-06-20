@@ -53,8 +53,16 @@ trait StringParserTerrain extends GameDef {
    * by `levelVector`.
    */
 //  def terrainFunction(levelVector: Vector[Vector[Char]]): Pos => Boolean = ???
-  def terrainFunction(levelVector: Vector[Vector[Char]]): Pos => Boolean =
-    (p: Pos) => levelVector(p.row)(p.col) == 'o'
+  def terrainFunction(levelVector: Vector[Vector[Char]]): Pos => Boolean = {
+    def f(p: Pos): Boolean = {
+      val width = levelVector.length
+      val height = levelVector(0).length
+      if (p.row >= width || p.row < 0 || p.col >= height || p.col < 0) false
+      else levelVector(p.row)(p.col) == 'o'
+    }
+    f
+  }
+
 
   /**
    * This function should return the position of character `c` in the
