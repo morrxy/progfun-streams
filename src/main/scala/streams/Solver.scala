@@ -38,6 +38,8 @@ trait Solver extends GameDef {
       }
     }
     rec(b.legalNeighbors)
+
+//    (b.legalNeighbors foldRight Stream.empty) ((x, y) => (x._1, x._2 :: history) #:: y)
   }
 
   /**
@@ -77,10 +79,10 @@ trait Solver extends GameDef {
    */
 //  def from(initial: Stream[(Block, List[Move])],
 //           explored: Set[Block]): Stream[(Block, List[Move])] = ???
-  def from(initial: Stream[(Block, List[Move])],
-           explored: Set[Block]): Stream[(Block, List[Move])] = {
-
-  }
+//  def from(initial: Stream[(Block, List[Move])],
+//           explored: Set[Block]): Stream[(Block, List[Move])] = {
+//
+//  }
 
   /**
    * The stream of all paths that begin at the starting block.
