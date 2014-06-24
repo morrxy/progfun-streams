@@ -50,6 +50,7 @@ class BloxorzSuite extends FunSuite {
   test("findChar level 1") {
     new Level1 {
       assert(startPos == Pos(1,1))
+      assert(goal == Pos(4, 7))
     }
   }
 
@@ -83,12 +84,27 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
+  test("from") {
+    new Level1 {
+      println("startPos: " + startPos)
+      println("startBlock: " + startBlock)
+//      val initial = Stream((Block(startPos, startPos),))
+//      val s = from()
+    }
+  }
+
+  test("solution") {
+    new Level1 {
+      println("solution: " + solution)
+    }
+  }
+
 //  test("optimal solution for level 1") {
 //    new Level1 {
 //      assert(solve(solution) == Block(goal, goal))
 //    }
 //  }
-//
+
 //  test("optimal solution length for level 1") {
 //    new Level1 {
 //      assert(solution.length == optsolution.length)
