@@ -86,28 +86,33 @@ class BloxorzSuite extends FunSuite {
 
   test("from") {
     new Level1 {
-      println("startPos: " + startPos)
-      println("startBlock: " + startBlock)
-//      val initial = Stream((Block(startPos, startPos),))
-//      val s = from()
+//      println("startPos: " + startPos)
+//      println("startBlock: " + startBlock)
+      val initial = Stream((startBlock, Nil))
+      val explored = Set(startBlock)
+      val s = from(initial, explored)
+      println("s1 length: " + s.toList.length)
+
+      println("pathsFromStart length: " + pathsFromStart.toList.length)
     }
   }
 
   test("solution") {
     new Level1 {
+      println("pathsToGoal: length " + pathsToGoal)
       println("solution: " + solution)
     }
   }
 
-//  test("optimal solution for level 1") {
-//    new Level1 {
-//      assert(solve(solution) == Block(goal, goal))
-//    }
-//  }
+  test("optimal solution for level 1") {
+    new Level1 {
+      assert(solve(solution) == Block(goal, goal))
+    }
+  }
 
-//  test("optimal solution length for level 1") {
-//    new Level1 {
-//      assert(solution.length == optsolution.length)
-//    }
-//  }
+  test("optimal solution length for level 1") {
+    new Level1 {
+      assert(solution.length == optsolution.length)
+    }
+  }
 }

@@ -11,7 +11,7 @@ trait Solver extends GameDef {
    * Returns `true` if the block `b` is at the final position
    */
 //  def done(b: Block): Boolean = ???
-  def done(b: Block): Boolean = b.isStanding && b.b1.row == goal.row && b.b1.col == goal.col
+  def done(b: Block): Boolean = b.isStanding && b.b1 == goal
 
   /**
    * This function takes two arguments: the current block `b` and
@@ -85,7 +85,8 @@ trait Solver extends GameDef {
     else {
       val more = for {
         path <- initial
-        next <- newNeighborsOnly(neighborsWithHistory(path._1, path._2), explored)
+        neighbors = neighborsWithHistory(path._1, path._2)
+        next <- newNeighborsOnly(neighbors, explored)
       } yield next
       initial append from(more, explored ++ (more map (_._1)))
     }
@@ -95,7 +96,7 @@ trait Solver extends GameDef {
    * The stream of all paths that begin at the starting block.
    */
 //  lazy val pathsFromStart: Stream[(Block, List[Move])] = ???
-  lazy val pathsFromStart: Stream[(Block, List[Move])] = from(Stream((startBlock, List())), Set())
+  lazy val pathsFromStart: Stream[(Block, List[Move])] = from(Stream((startBlock, Nil)), Set(startBlock))
 
   /**
    * Returns a stream of all possible pairs of the goal block along
@@ -103,7 +104,7 @@ trait Solver extends GameDef {
    */
 //  lazy val pathsToGoal: Stream[(Block, List[Move])] = ???
   lazy val pathsToGoal: Stream[(Block, List[Move])] =
-    pathsFromStart filter (path => path._1.isStanding && (path._1.b1 == goal))
+    pathsFromStart filter (path => done(path._1))
 
   /**
    * The (or one of the) shortest sequence(s) of moves to reach the
