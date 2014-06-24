@@ -79,17 +79,28 @@ trait Solver extends GameDef {
    */
 //  def from(initial: Stream[(Block, List[Move])],
 //           explored: Set[Block]): Stream[(Block, List[Move])] = ???
-  def from(initial: Stream[(Block, List[Move])],
-           explored: Set[Block]): Stream[(Block, List[Move])] = {
-    if (initial.isEmpty) Stream.empty
-    else {
-      val more = for {
-        path <- initial
-        neighbors = neighborsWithHistory(path._1, path._2)
-        next <- newNeighborsOnly(neighbors, explored)
-      } yield next
-      initial append from(more, explored ++ (more map (_._1)))
-    }
+//  def from(initial: Stream[(Block, List[Move])],
+//           explored: Set[Block]): Stream[(Block, List[Move])] = {
+//    if (initial.isEmpty) Stream.empty
+//    else {
+//      val more = for {
+//        path <- initial
+//        neighbors = neighborsWithHistory(path._1, path._2)
+//        next <- newNeighborsOnly(neighbors, explored)
+//      } yield next
+//      initial append from(more, explored ++ (more map (_._1)))
+//    }
+//  }
+    def from(initial: Stream[(Block, List[Move])],
+             explored: Set[Block]): Stream[(Block, List[Move])] = {
+      if (initial.isEmpty) Stream.empty
+      else {
+        val (block, history) = initial.head
+        val neighbors = neighborsWithHistory(block, history)
+        val newNeighbors = newNeighborsOnly(neighbors, explored)
+        val newMoves = initial.tail #::: newNeighbors
+        initial.head #:: from(newMoves, explored + block)
+      }
   }
 
   /**
