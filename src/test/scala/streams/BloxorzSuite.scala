@@ -41,7 +41,7 @@ class BloxorzSuite extends FunSuite {
   }
 
   trait Level2 extends SolutionChecker {
-    /* terrain for level 1*/
+    /* terrain for level 2*/
 
     val level =
       """ooo-------

@@ -31,15 +31,18 @@ trait Solver extends GameDef {
    */
 //  def neighborsWithHistory(b: Block, history: List[Move]): Stream[(Block, List[Move])] = ???
   def neighborsWithHistory(b: Block, history: List[Move]): Stream[(Block, List[Move])] = {
-    def rec(tuples: List[(Block, Move)]): Stream[(Block, List[Move])] = {
-      tuples match {
-        case List() => Stream.empty
-        case (block, move) :: smallerTuples => (block, move :: history) #:: rec(smallerTuples)
-      }
-    }
-    rec(b.legalNeighbors)
 
-//    (b.legalNeighbors foldRight Stream.empty) ((x, y) => (x._1, x._2 :: history) #:: y)
+//    def rec(tuples: List[(Block, Move)]): Stream[(Block, List[Move])] = {
+//      tuples match {
+//        case List() => Stream.empty
+//        case (block, move) :: smallerTuples => (block, move :: history) #:: rec(smallerTuples)
+//      }
+//    }
+//    rec(b.legalNeighbors)
+
+    (b.legalNeighbors map {
+      case (block, move) => (block, move :: history)
+    }).toStream
   }
 
   /**
@@ -134,8 +137,6 @@ trait Solver extends GameDef {
   lazy val solution: List[Move] =
     pathsToGoal match {
       case Stream.Empty => List()
-      case head #:: tail => head match {
-        case (_, history) => history.reverse
-      }
+      case (_, history) #:: _ => history.reverse
     }
 }
