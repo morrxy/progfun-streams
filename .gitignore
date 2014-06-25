@@ -3,6 +3,7 @@ lib_managed/*
 submission/*
 project/project/*
 project/target/*
+*.log
 
 .idea/libraries/*
 .idea/workspace.xml

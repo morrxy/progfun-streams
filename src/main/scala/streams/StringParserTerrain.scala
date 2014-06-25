@@ -58,7 +58,7 @@ trait StringParserTerrain extends GameDef {
       val rows = levelVector.length
       val cols = levelVector(0).length
       if (p.row >= rows || p.row < 0 || p.col >= cols || p.col < 0) false
-      else levelVector(p.row)(p.col) == 'o'
+      else levelVector(p.row)(p.col) != '-'
     }
     f
   }

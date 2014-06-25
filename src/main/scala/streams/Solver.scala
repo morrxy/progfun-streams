@@ -34,7 +34,7 @@ trait Solver extends GameDef {
     def rec(tuples: List[(Block, Move)]): Stream[(Block, List[Move])] = {
       tuples match {
         case List() => Stream.empty
-        case tuple :: smallerTuples => (tuple._1, tuple._2 :: history) #:: rec(smallerTuples)
+        case (block, move) :: smallerTuples => (block, move :: history) #:: rec(smallerTuples)
       }
     }
     rec(b.legalNeighbors)
@@ -51,7 +51,8 @@ trait Solver extends GameDef {
 //                       explored: Set[Block]): Stream[(Block, List[Move])] = ???
   def newNeighborsOnly(neighbors: Stream[(Block, List[Move])],
                        explored: Set[Block]): Stream[(Block, List[Move])] = {
-    neighbors filterNot (explored contains _._1)
+//    neighbors filterNot (explored contains _._1)
+    neighbors filterNot { case (block, _) => explored contains block }
   }
 
   /**
@@ -79,29 +80,32 @@ trait Solver extends GameDef {
    */
 //  def from(initial: Stream[(Block, List[Move])],
 //           explored: Set[Block]): Stream[(Block, List[Move])] = ???
+
+  def from(initial: Stream[(Block, List[Move])],
+           explored: Set[Block]): Stream[(Block, List[Move])] = {
+    if (initial.isEmpty) Stream.empty
+    else {
+      val more = for {
+        (block, history) <- initial
+        neighbors = neighborsWithHistory(block, history)
+        newNeighbors = newNeighborsOnly(neighbors, explored)
+        next <- newNeighbors
+      } yield next
+      initial append from(more, explored ++ (more map { case (block, _) => block}))
+    }
+  }
+
 //  def from(initial: Stream[(Block, List[Move])],
 //           explored: Set[Block]): Stream[(Block, List[Move])] = {
 //    if (initial.isEmpty) Stream.empty
 //    else {
-//      val more = for {
-//        path <- initial
-//        neighbors = neighborsWithHistory(path._1, path._2)
-//        next <- newNeighborsOnly(neighbors, explored)
-//      } yield next
-//      initial append from(more, explored ++ (more map (_._1)))
+//      val (block, history) = initial.head
+//      val neighbors = neighborsWithHistory(block, history)
+//      val newNeighbors = newNeighborsOnly(neighbors, explored)
+//      val newMoves = initial.tail #::: newNeighbors
+//      initial.head #:: from(newMoves, explored + block)
 //    }
 //  }
-    def from(initial: Stream[(Block, List[Move])],
-             explored: Set[Block]): Stream[(Block, List[Move])] = {
-      if (initial.isEmpty) Stream.empty
-      else {
-        val (block, history) = initial.head
-        val neighbors = neighborsWithHistory(block, history)
-        val newNeighbors = newNeighborsOnly(neighbors, explored)
-        val newMoves = initial.tail #::: newNeighbors
-        initial.head #:: from(newMoves, explored + block)
-      }
-  }
 
   /**
    * The stream of all paths that begin at the starting block.
@@ -115,7 +119,8 @@ trait Solver extends GameDef {
    */
 //  lazy val pathsToGoal: Stream[(Block, List[Move])] = ???
   lazy val pathsToGoal: Stream[(Block, List[Move])] =
-    pathsFromStart filter (path => done(path._1))
+//    pathsFromStart filter (path => done(path._1))
+    pathsFromStart filter { case (block, _) => done(block) }
 
   /**
    * The (or one of the) shortest sequence(s) of moves to reach the
@@ -127,6 +132,10 @@ trait Solver extends GameDef {
    */
 //  lazy val solution: List[Move] = ???
   lazy val solution: List[Move] =
-    if (pathsToGoal.isEmpty) List()
-    else pathsToGoal.head._2
+    pathsToGoal match {
+      case Stream.Empty => List()
+      case head #:: tail => head match {
+        case (_, history) => history.reverse
+      }
+    }
 }

@@ -40,6 +40,16 @@ class BloxorzSuite extends FunSuite {
     val optsolution = List(Right, Right, Down, Right, Right, Right, Down)
   }
 
+  trait Level2 extends SolutionChecker {
+    /* terrain for level 1*/
+
+    val level =
+      """ooo-------
+        |oSooTo----""".stripMargin
+
+    val optsolution = List(Right, Right)
+  }
+
   test("terrain function level 1") {
     new Level1 {
       assert(terrain(Pos(0,0)), "0,0")
@@ -54,12 +64,37 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
+  test("isStanding") {
+    new Level2 {
+      assert(Block(Pos(1,1),Pos(1,1)).isStanding)
+      assert(Block(Pos(1,4),Pos(1,4)).isStanding)
+      assert(!Block(Pos(1,2),Pos(1,3)).isStanding)
+    }
+  }
+
+  test("isLegal") {
+    new Level2 {
+      assert(Block(Pos(1,1),Pos(1,1)).isLegal)
+      assert(Block(Pos(1,4),Pos(1,4)).isLegal)
+      assert(!Block(Pos(0,2),Pos(0,3)).isLegal)
+      assert(!Block(Pos(2,2),Pos(2,3)).isLegal)
+    }
+  }
+
   test("neighborsWithHistory") {
     new Level1 {
       val s = neighborsWithHistory(Block(Pos(1,1),Pos(1,1)), List(Left,Up))
       assert(s.toSet === Set(
         (Block(Pos(1,2),Pos(1,3)), List(Right,Left,Up)),
         (Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))
+      ))
+    }
+
+    new Level2 {
+      val s = neighborsWithHistory(Block(Pos(1,2),Pos(1,3)), List(Right))
+      assert(s.toSet === Set(
+        (Block(Pos(1,1),Pos(1,1)), List(Left, Right)),
+        (Block(Pos(1,4), Pos(1,4)), List(Right, Right))
       ))
     }
   }
@@ -86,21 +121,29 @@ class BloxorzSuite extends FunSuite {
 
   test("from") {
     new Level1 {
-//      println("startPos: " + startPos)
-//      println("startBlock: " + startBlock)
       val initial = Stream((startBlock, Nil))
       val explored = Set(startBlock)
       val s = from(initial, explored)
-      println("s1 length: " + s.toList.length)
+      println("level1 all path: " + s.toList)
+      println("level1 all path length: " + s.toList.length)
 
-      println("pathsFromStart length: " + pathsFromStart.toList.length)
+      println("level1 pathsFromStart length: " + pathsFromStart.toList.length)
+    }
+
+    new Level2 {
+      val initial = Stream((startBlock, Nil))
+      val explored = Set(startBlock)
+      val s = from(initial, explored)
+      println("level2 all path: " + s.toList)
+      println("level2 all path length: " + s.toList.length)
+
+      println("level2 pathsFromStart length: " + pathsFromStart.toList.length)
     }
   }
 
   test("solution") {
     new Level1 {
-      println("pathsToGoal: length " + pathsToGoal)
-      println("solution: " + solution)
+      assert(solution == optsolution)
     }
   }
 

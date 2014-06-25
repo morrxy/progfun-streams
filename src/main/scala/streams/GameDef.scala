@@ -145,7 +145,8 @@ trait GameDef {
      */
 //    def legalNeighbors: List[(Block, Move)] = ???
     def legalNeighbors: List[(Block, Move)] = {
-      neighbors filter (x => x._1.isLegal)
+//      neighbors filter (x => x._1.isLegal)
+      neighbors filter { case (block, _) => block.isLegal }
     }
 
     /**
